@@ -1,4 +1,4 @@
-import csv, re
+import csv, re, sys
 
 import numpy as np
 import pandas as pd
@@ -7,7 +7,16 @@ import seaborn as sns
 
 exp = re.compile('(Grade: ([ABCDF])[-+]?( \((\d*\.*\d*)\))?)|(Grade: (\d+\.?\d+))')
 
-target_name = ''
+student = ''
+i = 1
+while i < len(sys.argv):
+    arg = sys.argv[i]
+    if arg in ("-s", "--student"):
+        if i + 1 == len(sys.argv):
+            print("no argument to {}".format(arg))
+            sys.exit(1)
+        student = sys.argv[i + 1]
+    i += 1
 
 with open('export.csv') as file:
     with open('parsed.csv', 'w', newline='') as out:
@@ -18,7 +27,7 @@ with open('export.csv') as file:
             course = row[10]
             date = row[0]
             name = row[1]
-            if name != target_name:
+            if name != student:
                 continue;
             note = row[13]
             match = exp.match(note)
