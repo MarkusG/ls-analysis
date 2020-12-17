@@ -1,4 +1,5 @@
 import csv, re
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -43,11 +44,13 @@ with open('export.csv') as file:
 
             writer.writerow([pd.to_datetime(date), name, course, grade])
 
-cs_df = pd.read_csv('parsed.csv')
-print(cs_df)
+dateparser = lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
+cs_df = pd.read_csv('parsed.csv', parse_dates=['date'], date_parser=dateparser)
 
 sns.set_theme(style="darkgrid")
 
-sns.relplot(x="date", y="grade", kind="line", hue="course", data=cs_df).set(xticklabels=[])
+fig, ax = plt.subplots(figsize = (12,12))
+
+fig = sns.lineplot(x="date", y="grade", hue="course", data=cs_df, ax=ax)
 
 plt.show()
